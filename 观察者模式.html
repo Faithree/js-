@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<script>
+    //观察者模式：对程序中某一个对象的进行实时的观察，当该对象状态发生改变的时候 进行通知
+    //观察者、被观察者
+    //经典案例：订报纸 ：（报社[发布者]、订阅者）
+    var Publish = function (name) {
+        this.name = name;
+        this.subscribers = []//所有的订阅者，数组的元素都是函数类型
+    }
+    //publish的实例对象去发布消息
+    Publish.prototype.deliver = function (news) {
+        var publish = this;//this就代表报社
+        this.subscribers.forEach(function (item) {
+            item(news,publish);//每个订阅者都收到了news
+        })
+        return this;//链式调用
+    }
+    //订阅者的方法,每一个订阅者都是一个函数,在函数原型上扩展一个方法
+    Function.prototype.subscribe = function (publish) {//出版社形参
+        var sub = this;//取得订阅者这个人
+        //不能同时顶一家出版社同一份报纸,没意义
+//        publish.subscribers//张三，李四，王五，名字可能重复
+        //publish.subscribers数组里面有的人，不能再订阅
+        //some方法，循环遍历数组的每一个元素，执行一个函数，如果有一个返回true，整体返回true
+        var alreadExists = publish.subscribers.some(function (item) {
+            return item ===sub;
+        })
+        //如果出版社名单没有这个人，则加入其中
+        if(!alreadExists){
+            publish.subscribers.push(sub);
+        }
+        return this;//链式编程
+    }
+    //具体的一个订阅者去取消订阅报纸的方法
+    Function.prototype.unsubscribe = function (publish) {
+        var sub = this;//取得订阅者这个人
+        //filter 过滤:循环数组，如果不匹配，则删除该元素
+        publish.subscribers = publish.subscribers.filter(function (item) {
+            return item !== sub;
+        });
+        return this;//链式编程
+    }
+    window.onload = function () {
+        var pub1 = new Publish('报社一');
+        var pub2 = new Publish('报社二');
+        var pub3 = new Publish('报社三');
+        //观察者
+        var sub1 = function (news,pub) {
+            document.getElementById('sub1').innerHTML +=pub.name + ':' + news +'\n'
+        }
+        var sub2 = function (news,pub) {
+            document.getElementById('sub2').innerHTML += pub.name + ':' +news+'\n'
+        }
+        var p1 = document.getElementById('pub1')
+        var p2 = document.getElementById('pub2')
+        var p3 = document.getElementById('pub3')
+        sub1.subscribe(pub1).subscribe(pub2).subscribe(pub3)
+        sub2.subscribe(pub1).subscribe(pub2).subscribe(pub3)
+        //事件绑定
+        p1.onclick = function () {
+            pub1.deliver(document.getElementById('text1').value,pub1);
+        }
+        p2.onclick = function () {
+            pub2.deliver(document.getElementById('text2').value,pub2);
+        }
+        p3.onclick = function () {
+            pub3.deliver(document.getElementById('text3').value,pub3);
+        }
+        sub1.unsubscribe(pub1); //取消订阅
+    }
+
+
+
+
+</script>
+
+<div class="col-lg-3">
+    <div class="input-group">
+      <span id="pub1" class="input-group-addon">
+        报社一
+      </span>
+        <input v-model="user.name" type="text" class="form-control"  id="text1">
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="input-group">
+      <span id="pub2" class="input-group-addon">
+        报社二
+      </span>
+        <input v-model="user.name" type="text" class="form-control"  id="text2">
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="input-group">
+      <span id="pub3" class="input-group-addon">
+        报社三
+      </span>
+        <input v-model="user.name" type="text" class="form-control"  id="text3">
+    </div>
+</div>
+
+订阅者一
+<textarea id="sub1" class="form-control" rows="5"></textarea>
+订阅者二:
+<textarea id="sub2"class="form-control" rows="5"></textarea>
+</body>
+</html>
