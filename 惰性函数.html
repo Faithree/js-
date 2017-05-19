@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var Obj = function () {
+        alert('乘风gg!');
+        Obj = function () {
+            alert('Double 乘风gg!')
+        };
+    }
+    //    Obj();
+    //    Obj();
+    //添加一个新属性
+    Obj.property = 'property';
+    //赋值给另一个不同名称的变量
+    var modify = Obj;
+    //作为一个方法使用
+    var _obj = {
+        fn: Obj
+    }
+    //调用赋值给modify的情况
+    modify();//'乘风gg!'
+    modify();//'乘风gg!'
+    console.log(modify.property);//'property'
+    //作为一个方法来调用
+    _obj.fn()//'乘风gg!'
+    _obj.fn()//'乘风gg!'
+    console.log(_obj.fn.property);//'property'
+    //直接调用
+    Obj();//'Double 乘风gg!'
+    Obj();//'Double 乘风gg!'
+    console.log(Obj.property);//'undefined'
+
+
+    //应用
+   /* function createXHR() {
+        var xhr = null;
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest;
+        } else {
+            try {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {
+                try {
+                    xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        xhr = new ActiveXObject("Msxml3.XMLHTTP");
+                    } catch (e) {
+
+                    }
+                }
+            }
+        }
+        return xhr;
+    }
+    var xhr = createXHR();
+    var xhr2 = createXHR();*/
+
+   /* function createXHR() {
+        var xhr = null,
+            flag = false,
+            ary = [
+                function () {
+                    return new XMLHttpRequest;
+                },
+                function () {
+                    return new ActiveXObject("Microsoft.XMLHTTP");
+                },
+                function () {
+                    return new ActiveXObject("Msxml2.XMLHTTP");
+                },
+                function () {
+                    return new ActiveXObject("Msxml3.XMLHTTP");
+                }
+            ];
+        //循环遍历这个数组，看看数组内的哪一个元素兼容浏览器，如果兼容，就赋值给给xhr，并且返回出去
+        for (var i = 0, len = ary.length; i < len; i++) {
+            var curFn = ary[i];
+            try {
+                xhr = curFn();
+                createXHR = curFn;//重新定义createXHR ,第二次调用ajax请求，则直接使用这个方法
+                flag = true;
+                break;
+            } catch (e) {
+                //说明浏览器不兼容，继续循环
+            }
+        }
+        if (!flag) {
+            throw new Error("你的浏览器不支持 ，请升级浏览器");
+        }
+        return xhr;
+    }*/
+
+</script>
+</body>
+</html>
